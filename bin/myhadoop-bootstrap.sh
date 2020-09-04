@@ -8,6 +8,9 @@
 ################################################################################
 
 ### Initialize arguments
+
+echo "MyHadoop Bootstrap INIT"
+
 MH_LIFETIME=$((6 * 3600))                   # can be overwritten by command line
 MH_HOME="$(dirname $(readlink -f $0))/.."
 
@@ -45,6 +48,7 @@ else
     MH_JOBID=$$
 fi
 
+echo "Resource manager detected successfully"
 cd $MH_WORKDIR
 
 ### If HADOOP_CONF_DIR isn't already in the environment, make one up here
@@ -52,8 +56,10 @@ if [ "z$HADOOP_CONF_DIR" == "z" ]; then
   export HADOOP_CONF_DIR=$MH_WORKDIR/$MH_JOBID
 fi
 
+echo "Running myhadoop-configure.sh"
 ### Run myhadoop-configure for the user
 $MH_HOME/bin/myhadoop-configure.sh || exit 1
+echo "myhadoop configuration complete"
 
 ### Generate setenv.sourceme so the user can easily access his or her cluster
 cat << EOF >> setenv.sourceme
@@ -82,8 +88,12 @@ EOF
 source setenv.sourceme
 
 ### Boot up the Hadoop cluster we just configured
+echo "Running start-all.sh"
 $HADOOP_HOME/bin/start-all.sh
+echo "Start-all complete"
 
 sleep $MH_LIFETIME
 
+echo "Bootstrap script termination started"
 myhadoop-bootstrap-terminate
+echo "Termination complete"
