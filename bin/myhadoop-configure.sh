@@ -90,6 +90,8 @@ if [ -e "$MH_HOME/etc/myhadoop.conf" ]; then
 fi
 
 ### Detect our resource manager and populate necessary environment variables
+echo "Detecting resrouce manager"
+
 if [ "z$PBS_JOBID" != "z" ]; then
     RESOURCE_MGR="pbs"
 elif [ "z$PE_NODEFILE" != "z" ]; then
@@ -117,6 +119,8 @@ elif [ "z$RESOURCE_MGR" == "zslurm" ]; then
 fi
 
 ### Parse arguments
+echo "Parsing Args"
+
 args=`getopt n:p:c:s:h:i:? $*`
 if test $? != 0
 then
